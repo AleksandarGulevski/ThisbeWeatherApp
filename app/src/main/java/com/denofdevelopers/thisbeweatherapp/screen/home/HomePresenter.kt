@@ -14,7 +14,7 @@ import timber.log.Timber
 class HomePresenter(
     private var activity: HomeActivity,
     private var apiService: ApiService
-): HomeContract.Presenter {
+) : HomeContract.Presenter {
 
     private var request: Disposable? = null
 
@@ -37,7 +37,7 @@ class HomePresenter(
     }
 
     private fun onGetWeatherSuccess(weatherResponse: WeatherResponse) {
-        //TODO create method in activity to display the results
+        activity.displayWeather(weatherResponse)
         activity.hideProgress()
     }
 

@@ -1,6 +1,7 @@
 package com.denofdevelopers.thisbeweatherapp.screen.home
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -8,21 +9,29 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
+import android.text.TextUtils
 import android.view.View
 import androidx.core.app.ActivityCompat
 import com.denofdevelopers.thisbeweatherapp.R
 import com.denofdevelopers.thisbeweatherapp.application.App
 import com.denofdevelopers.thisbeweatherapp.common.BaseActivity
+import com.denofdevelopers.thisbeweatherapp.model.WeatherResponse
 import com.denofdevelopers.thisbeweatherapp.util.MessageUtil.toast
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.OnSuccessListener
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
 import timber.log.Timber
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 class HomeActivity : BaseActivity(), HomeContract.View {
+
+    @Inject
+    lateinit var presenter: HomePresenter
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var locationRequest: LocationRequest? = null
@@ -132,7 +141,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
                     Timber.d("onSuccess: getLastLocation")
                     if (location != null) {
                         currentLocation = location
-                        //TODO call presenter to get weather by longitude and latitude
+                       presenter.getWeatherByDeviceLocation(location.latitude, location.longitude)
                         Timber.i("""Latitude is ${location.latitude} and longitude is ${location.longitude}""")
                     } else {
                         Timber.i("---> location is null")
@@ -178,6 +187,74 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         if (requestCode == REQUEST_GRANT_PERMISSION) {
             getCurrentLocation()
         }
+    }
+
+    fun displayWeather(weatherResponse: WeatherResponse) {
+        selectedCityName.text = checkForEmptyString(weatherResponse.name)
+        currentTemperature.text = getString(
+            R.string.celsius,
+            checkForEmptyString(weatherResponse.main.temperature.toInt().toString())
+        )
+        val icon = weatherResponse.weather.map { it.icon }[0]
+        Picasso.get()
+            .load("http://openweathermap.org/img/wn/$icon@2x.png")
+            .placeholder(R.drawable.loader_anim_small)
+            .error(R.drawable.no_image)
+            .into(weatherIcon)
+        feelsLike.text = getString(
+            R.string.feels_like,
+            checkForEmptyString(weatherResponse.main.feelsLike.toInt().toString())
+        )
+        val description = weatherResponse.weather.map { it.description }[0]
+        weatherDescription.text = checkForEmptyString(description)
+        sunrise.text = getString(
+            R.string.sunrise,
+            checkForEmptyString(convertTimestampToFormattedTime(weatherResponse.sys.sunrise))
+        )
+        sunset.text = getString(
+            R.string.sunset,
+            checkForEmptyString(convertTimestampToFormattedTime(weatherResponse.sys.sunset))
+        )
+        tempMin.text = getString(
+            R.string.temp_min,
+            checkForEmptyString(weatherResponse.main.tempMin.toInt().toString())
+        )
+        tempMax.text = getString(
+           R.string.temp_max,
+            checkForEmptyString(weatherResponse.main.tempMax.toInt().toString())
+        )
+        humidity.text = getString(
+            R.string.humidity,
+            checkForEmptyString(weatherResponse.main.humidity.toString())
+        )
+        pressure.text = getString(
+            R.string.pressure,
+            checkForEmptyString(weatherResponse.main.pressure.toString())
+        )
+        visibility.text =
+            getString(
+                R.string.visibility,
+                checkForEmptyString(weatherResponse.visibility)
+            )
+        windSpeed.text = getString(
+            R.string.wind_speed,
+            checkForEmptyString(weatherResponse.wind.speed.toString())
+        )
+    }
+
+    private fun checkForEmptyString(string: String): String {
+        return if (!TextUtils.isEmpty(string)) {
+            string
+        } else "No data"
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun convertTimestampToFormattedTime(timestamp: Long): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = timestamp * 1000L
+        val sdf = SimpleDateFormat("HH:mm:ss")
+        val date = Date(timestamp * 1000)
+        return sdf.format(date)
     }
 
     override fun showProgress() {
