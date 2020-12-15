@@ -6,16 +6,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.text.TextUtils
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
 import androidx.core.app.ActivityCompat
 import com.denofdevelopers.thisbeweatherapp.R
 import com.denofdevelopers.thisbeweatherapp.application.App
 import com.denofdevelopers.thisbeweatherapp.common.BaseActivity
 import com.denofdevelopers.thisbeweatherapp.model.WeatherResponse
+import com.denofdevelopers.thisbeweatherapp.util.CityListUtil.getCityList
+import com.denofdevelopers.thisbeweatherapp.util.InputViewHandler
 import com.denofdevelopers.thisbeweatherapp.util.MessageUtil.toast
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -49,6 +54,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         checkLocationPermission()
         createLocationRequest()
         settingsCheck()
+        setAutoCompleteView()
         setupOnClickListeners()
     }
 
@@ -262,6 +268,35 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         val sdf = SimpleDateFormat("HH:mm:ss")
         val date = Date(timestamp * 1000)
         return sdf.format(date)
+    }
+
+    private fun setAutoCompleteView() {
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this,
+            R.layout.custom_simple_spinner_dropdown_item,
+            getCityList()
+        )
+        searchCity.setAdapter(adapter)
+        searchCity.threshold = 1
+        searchCity.setTextColor(Color.BLACK)
+        searchCity.setOnItemClickListener { adapterView, v, _, _ ->
+            if (searchCity.text.toString() != null) {
+                InputViewHandler.hideKeyboard(adapterView)
+                presenter.getWeatherByCity(searchCity.text.toString())
+            }
+            searchCity.setOnEditorActionListener { view, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    if (searchCity.text.toString() != null) {
+                        InputViewHandler.hideKeyboard(view)
+                        presenter.getWeatherByCity(searchCity.text.toString())
+                    }
+                } else {
+                    toast("Something went wrong, please try again")
+                }
+                true
+            }
+            false
+        }
     }
 
     override fun showProgress() {
