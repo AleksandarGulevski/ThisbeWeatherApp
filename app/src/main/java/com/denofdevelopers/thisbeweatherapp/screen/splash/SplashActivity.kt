@@ -1,8 +1,7 @@
 package com.denofdevelopers.thisbeweatherapp.screen.splash
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.denofdevelopers.thisbeweatherapp.R
+import androidx.appcompat.app.AppCompatActivity
 import com.denofdevelopers.thisbeweatherapp.screen.home.HomeActivity
 
 class SplashActivity : AppCompatActivity() {
@@ -13,5 +12,6 @@ class SplashActivity : AppCompatActivity() {
 
     private fun startNextActivity() {
         HomeActivity.start(this)
+        finish()
     }
 }
