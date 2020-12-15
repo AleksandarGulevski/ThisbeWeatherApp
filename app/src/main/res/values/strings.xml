@@ -3,4 +3,14 @@
     <string name="current_details">Current details:</string>
     <string name="generic_error">Something went wrong. Please try again</string>
     <string name="no_internet">No internet connection</string>
+    <string name="celsius">%1$s c&#176;</string>
+    <string name="feels_like">Feels like: %1$s c&#176;</string>
+    <string name="sunrise">Sunrise: %1$s</string>
+    <string name="sunset">Sunset: %1$s</string>
+    <string name="temp_min">Temp min: %1$s c&#176;</string>
+    <string name="temp_max">Temp max: %1$s c&#176;</string>
+    <string name="humidity">Humidity: %1$s %%</string>
+    <string name="pressure">Pressure: %1$s hPa</string>
+    <string name="visibility">Visibility: %1$s</string>
+    <string name="wind_speed">Wind speed: %1$s m/s</string>
 </resources>
