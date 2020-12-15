@@ -71,6 +71,13 @@ class HomeActivity : BaseActivity(), HomeContract.View {
     private fun setupOnClickListeners() {
         getMyLocationButton.setOnClickListener {
             getCurrentLocation()
+            searchCity.setText("")
+            searchCity.clearFocus()
+        }
+        searchIcon.setOnClickListener {
+            searchCity.dropDownHeight = 900
+            searchCity.showDropDown()
+
         }
     }
 
@@ -154,7 +161,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
                     Timber.d("onSuccess: getLastLocation")
                     if (location != null) {
                         currentLocation = location
-                       presenter.getWeatherByDeviceLocation(location.latitude, location.longitude)
+                        presenter.getWeatherByDeviceLocation(location.latitude, location.longitude)
                         Timber.i("""Latitude is ${location.latitude} and longitude is ${location.longitude}""")
                     } else {
                         Timber.i("---> location is null")
@@ -189,7 +196,6 @@ class HomeActivity : BaseActivity(), HomeContract.View {
             "Please enable Location settings...!!!"
         )
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -233,7 +239,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
             checkForEmptyString(weatherResponse.main.tempMin.toInt().toString())
         )
         tempMax.text = getString(
-           R.string.temp_max,
+            R.string.temp_max,
             checkForEmptyString(weatherResponse.main.tempMax.toInt().toString())
         )
         humidity.text = getString(
