@@ -27,4 +27,9 @@
         <item name="colorControlNormal">@color/white</item>
     </style>
 
+    <!-- Progress Bar Theme -->
+    <style name="Progressbar.App" parent="Theme.ThisBeWeatherApp">
+        <item name="colorControlActivated">@color/white</item>
+    </style>
+
 </resources>
