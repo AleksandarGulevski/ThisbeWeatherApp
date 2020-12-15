@@ -13,4 +13,5 @@
     <string name="pressure">Pressure: %1$s hPa</string>
     <string name="visibility">Visibility: %1$s</string>
     <string name="wind_speed">Wind speed: %1$s m/s</string>
+    <string name="no_data">No data</string>
 </resources>

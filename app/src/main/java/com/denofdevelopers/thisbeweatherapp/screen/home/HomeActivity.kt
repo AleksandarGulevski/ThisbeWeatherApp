@@ -299,6 +299,22 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         }
     }
 
+    fun showNoDataView() {
+        selectedCityName.text = getString(R.string.no_data)
+        currentTemperature.text = ""
+        weatherIcon.setImageResource(R.drawable.no_image)
+        feelsLike.text = ""
+        weatherDescription.text = ""
+        sunrise.text = ""
+        sunset.text = ""
+        tempMin.text = ""
+        tempMax.text = ""
+        humidity.text = ""
+        pressure.text = ""
+        visibility.text = ""
+        windSpeed.text = ""
+    }
+
     override fun showProgress() {
         progressSpinner.visibility = View.VISIBLE
     }
