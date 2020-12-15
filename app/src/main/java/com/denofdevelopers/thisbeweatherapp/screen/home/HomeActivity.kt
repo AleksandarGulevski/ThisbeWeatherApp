@@ -49,6 +49,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
         checkLocationPermission()
         createLocationRequest()
         settingsCheck()
+        setupOnClickListeners()
     }
 
     companion object {
@@ -59,6 +60,12 @@ class HomeActivity : BaseActivity(), HomeContract.View {
 
     private fun showDateAndTime() {
         dateTime.text = DateFormat.getDateTimeInstance().format(Date());
+    }
+
+    private fun setupOnClickListeners() {
+        getMyLocationButton.setOnClickListener {
+            getCurrentLocation()
+        }
     }
 
     private fun checkLocationPermission() {
