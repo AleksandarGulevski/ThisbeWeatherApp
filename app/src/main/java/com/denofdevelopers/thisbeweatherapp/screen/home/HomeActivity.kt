@@ -290,11 +290,13 @@ class HomeActivity : BaseActivity(), HomeContract.View {
                 InputViewHandler.hideKeyboard(adapterView)
                 presenter.getWeatherByCity(searchCity.text.toString())
             }
+        }
             searchCity.setOnEditorActionListener { view, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                     if (searchCity.text.toString() != null) {
                         InputViewHandler.hideKeyboard(view)
                         presenter.getWeatherByCity(searchCity.text.toString())
+                        searchCity.clearFocus()
                     }
                 } else {
                     toast("Something went wrong, please try again")
@@ -303,7 +305,7 @@ class HomeActivity : BaseActivity(), HomeContract.View {
             }
             false
         }
-    }
+
 
     fun showNoDataView() {
         selectedCityName.text = getString(R.string.no_data)
